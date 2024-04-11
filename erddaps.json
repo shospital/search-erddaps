@@ -82,5 +82,8 @@
   },
   {
     "url": "http://gcoos4.tamu.edu:8080/erddap/"
+  },
+  {
+    "url": "https://data.pmel.noaa.gov/pmel/erddap/"
   }
 ]
