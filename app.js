@@ -1,3 +1,12 @@
+// This page is a modified version of the original ERDDAP search project 
+// (https://erddap.com) and is maintained by the ERDDAP data user community in 
+// 	collaboration with the Southwest Fisheries Science Center (SWFSC) and NOAA 
+// 	CoastWatch. The initial development was supported by the Government of Ireland 
+// 	and the European Maritime and Fisheries Fund (EMFF) yas part of 
+// 	the EMFF Operational Programme 2014–2020.
+
+// Creative Common Attribution 4.0 International (CC BY 4.0) license
+
 var ERDDAP = function(settings){
     this.settings = settings;
 	this.endpoint = settings.url.replace(/\/+$/, "");
@@ -543,7 +552,7 @@ ERDDAPs.prototype.settingstable = function(){
 	this.erddaps = this.erddaps.filter(function(erddap){return !erddap.deleted});
 	var table = document.createElement("table");
 	table.setAttribute("id","settingsTable");
-	table.setAttribute("class","table");
+	table.setAttribute("class","table table-responsive");  // where class name is used in style
 	var thead = document.createElement("thead");
 	var tr = document.createElement("tr");
 	var th = document.createElement("th");

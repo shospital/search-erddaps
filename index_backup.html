@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+	    <meta name="description" content="Search datasets across multiple ERDDAPs">
+	    <meta name="author" content="Irish Marine Institute">
+
+    	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+   		integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+   		crossorigin=""/>
+
+	    <title>Search Erddaps</title>
+		<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+		<link rel="mask-icon" href="../safari-pinned-tab.svg" color="#5bbad5">
+		<meta name="msapplication-TileColor" content="#da532c">
+		<meta name="theme-color" content="#ffffff">
+
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+			integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<!-- start poloyfils for explorer -->
+		<script>
+        window.Promise || document.write('<script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"><\/script>');
+        window.fetch || document.write('<script src="https://unpkg.com/unfetch/polyfill"><\/script>');
+		window.URLSearchParams || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/url-search-params/1.1.0/url-search-params.js" integrity="sha256-vA5o1HRlFYggrn0yG+6bKGlnln9fWxi4S9cvzo6FlKw=" crossorigin="anonymous"><\/script>');
+
+		if (!String.prototype.startsWith) {
+ 		   String.prototype.startsWith = function(searchString, position){
+		      position = position || 0;
+		      return this.substr(position, searchString.length) === searchString;
+		  };
+		}
+		</script>
+		<!-- end polyfills -->
+		<script src="fetch-jsonp.js"></script>
+	</head>
+
+	<body>
+	    <div class="container">
+	        <div class="row" id="searchArea">
+	            <div class="col-md-12 well">
+	                <legend id="datasets"><a target="_blank" href="https://coastwatch.pfeg.noaa.gov/erddap/information.html" title="find out more...">ERDDAP</a> Dataset Discovery <a href="#settings" onclick="showSettings()" title="Click to configure settings" class="float-right"><i class="fa fa-cog"></i></span></a></legend>
+	                  <div id="testConnections" style="display: block"></div>
+					  <div id="searchForm" class="form-group" style="display: none">
+					    <label for="search">Search Datasets</label>
+					    <input type="text" class="form-control" id="search" aria-describedby="searchHelp" placeholder="Enter some text...">
+					    <small id="searchHelp" class="form-text text-muted">Type some words about the dataset you seek, then press the green button</small>
+					  	<button id="searchDatasetsButton" class="btn btn-success">Search</button>
+					  	<button id="clearButton" onclick="clearSearchDatasets()" class="btn btn-info">Clear</button>
+					  </div>
+					  <div class="row" id="searchInfo"></div>
+					  <div class="row" id="searchResults"></div>
+
+	            </div>
+	    	</div>
+	    	<div class="row" id="configurationArea" style="display: none">
+	            	<legend><a target="_blank" href="https://coastwatch.pfeg.noaa.gov/erddap/information.html" title="find out more...">ERDDAP</a> Server Settings <a href="#" onclick="showSearch()" title="Click to hide settings" class="float-right"><i class="fa fa-window-close"></i></span></a></legend>
+	            	<div id="configureErddapServer" class="form-group">
+					    <label for="filter">Configure Erddap Servers</label>
+					    <input type="text" class="form-control" id="filter" aria-describedby="filterHelp" placeholder="Enter some text...">
+					    <small id="filterHelp" class="form-text text-muted">Type some words to filter in the servers you seek, then press the green button</small>
+					  	<button id="filterServersButton" onclick="filterServers()" class="btn btn-success">Filter</button>
+					  	<button id="clearButton" onclick="clearFilterServers()" class="btn btn-info">Clear</button>
+					  	<button id="addServerButton" onclick="showAddServerForm()" class="btn btn-primary">Add a new server...</button>
+					  </div>
+					  <div class="col-md-12 well" id="erddapServers"></div>
+
+	     </div>
+
+	         <div class="row" id="addServerForm" style="display: none">
+				<form >
+				  <div class="form-group">
+				    <label for="newServerName">Name</label>
+				      <input type="text" class="form-control" id="newServerName" placeholder="My ERRDAP Server">
+				      <small id="share" class="form-text text-muted">To share your server with others, submit to <a target="_blank" title="opens a new window" href="https://github.com/erddap/search-erddaps/">search-erddaps</a></small>
+				  </div>
+				  <div class="form-group">
+				    <label for="newServerUrl">Url</label>
+				      <input type="text" class="form-control" id="newServerUrl" placeholder="http://my.erddap.server/erddap/">
+				      <small id="newServerUrlHelpBlock" class="form-text text-muted"></small>
+				  </div>
+				  <div class="form-group">
+				      <button type="button" id="addNewServerButtion" class="btn btn-success">Save</button>
+				      <button type="button" id="cancelAddNewServerButtion" onclick="hideAddServerForm()" class="btn btn-info">Cancel</button>
+				  </div>
+				</form>
+	         </div>
+
+		</div>
+		
+
+		<script src="app.js"></script>
+
+<script>
+	var getUrlSearchParams = function(){
+		if(location.hash.indexOf('?')>0){
+			return new URLSearchParams(location.hash.substring(location.hash.indexOf('?')));
+		}
+		return new URLSearchParams(location.hash?location.hash.substring(1):"");
+	}
+	var getSearchValue = function(){
+		return document.getElementById('search').value;
+	}
+	var runApp = function(erddap_list){
+			var erddaps = new ERDDAPs(erddap_list,true);//true = use custom erddaps saved to local storage.
+			var onHashChanged = function(){
+				var urlParams = getUrlSearchParams();
+				var search = urlParams.get('search');
+				if(search && search != getSearchValue()){
+					document.getElementById('search').value = search;
+					erddaps.search(search);
+				}
+			}
+			document.getElementById('search').onkeydown = function(e){
+				var evt = e || window.event;
+				if ( evt.keyCode === 13 ) {
+					erddaps.search(getSearchValue());
+				}
+			};
+			document.getElementById('filter').onkeydown = function(e){
+				var evt = e || window.event;
+				if ( evt.keyCode === 13 ) {
+					filterServers();
+				}
+			};
+			document.getElementById('searchDatasetsButton').onclick = function(){
+				erddaps.search(getSearchValue());
+			}
+			document.getElementById('addNewServerButtion').onclick = function(){
+				erddaps.addNewServerFromForm();
+			}
+
+			document.getElementById('search').focus();
+			erddaps.testConnect().then(function(){
+				document.getElementById("testConnections").style.display='none';
+				document.getElementById("searchForm").style.display='block';
+				document.getElementById("erddapServers").innerHTML= "";
+				document.getElementById("erddapServers").appendChild(erddaps.settingstable());
+				window.addEventListener("hashchange", onHashChanged, false);
+				onHashChanged();
+			});
+		};
+		fetch("./erddaps.json").then(function(response){
+			return response.json();
+		}).then(runApp).catch(function(x){
+			console.log("problem loading erddaps.json",x);
+		});
+		</script>
+		 <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+		   integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+		   crossorigin=""></script>
+
+	</body>
+</html>
