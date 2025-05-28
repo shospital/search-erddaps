@@ -1,29 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-	    <meta charset="utf-8">
-	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	    <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
-	    <meta name="description" content="Search datasets across multiple ERDDAPs">
-	    <meta name="author" content="Irish Marine Institute">
+<head>
+  <meta charset="UTF-8">
+  <title>Search ERDDAP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #f5f6fa;
+      color: #232323;
+      font-family: 'Inter', Arial, sans-serif;
+      margin: 0;
+    }
+    .navbar {
+      background: rgba(255,255,255,0.97);
+      box-shadow: 0 2px 10px rgba(45, 64, 206, 0.7);
+    }
+    .hero-bg {
+      position: relative;
+      width: 100vw;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+      min-height: 40vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(183, 214, 44, 0.09);
+      background: url('img/image.jpg') center/cover no-repeat;
+    }
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(36,40,44,0.55);
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 4rem 2rem 3rem 2rem;
+      width: 100%;
+    }
+    .hero-content h1 {
+      font-size: 2.7rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 1rem;
+    }
+    .hero-content p {
+      font-size: 1.25rem;
+      color: #e0e0e0;
+      margin-bottom: 0;
+    }
+    .center-card {
+      margin-top: -1rem; /* slightly lifted into hero */
+      margin-bottom: 3rem;
+      max-width: 1100px;
+      width: 98%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .card {
+      border: none;
+      border-radius: 1.3rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      padding: 2.5rem 2rem;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(2px);
+      /* Remove above and use background: #fff; if you want a solid white */
+    }
+    .footer {
+      text-align: center;
+      color: #888;
+      padding: 2rem 0 1rem;
+      font-size: .98rem;
+      background: none;
+    }
+    @media (max-width: 1200px) {
+      .center-card {
+        max-width: 98vw;
+      }
+    }
+    @media (max-width: 767px) {
+      .hero-bg {
+        min-height: 24vh;
+      }
+      .center-card {
+        margin-top: -1.5rem;
+        padding-left: 0;
+        padding-right: 0;
+      }
+      .card {
+        padding: 1.2rem .6rem;
+      }
+      .hero-content h1 {
+        font-size: 1.3rem;
+      }
+    }
 
-    	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
-   		integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
-   		crossorigin=""/>
+   
+  </style>
 
-	    <title>Search Erddaps</title>
-		<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-		<link rel="mask-icon" href="../safari-pinned-tab.svg" color="#5bbad5">
-		<meta name="msapplication-TileColor" content="#da532c">
-		<meta name="theme-color" content="#ffffff">
-
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
-			integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-		<!-- start poloyfils for explorer -->
-		<script>
+  		<script>
         window.Promise || document.write('<script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"><\/script>');
         window.fetch || document.write('<script src="https://unpkg.com/unfetch/polyfill"><\/script>');
 		window.URLSearchParams || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/url-search-params/1.1.0/url-search-params.js" integrity="sha256-vA5o1HRlFYggrn0yG+6bKGlnln9fWxi4S9cvzo6FlKw=" crossorigin="anonymous"><\/script>');
@@ -37,24 +120,63 @@
 		</script>
 		<!-- end polyfills -->
 		<script src="fetch-jsonp.js"></script>
-	</head>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg mb-0">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="#">Search-ERDDAP</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav gap-2">
+          <li class="nav-item"><a class="nav-link" href="#searchArea">Data Search</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-	<body>
-	    <div class="container">
-	        <div class="row" id="searchArea">
-	            <div class="col-md-12 well">
-	                <legend id="datasets"><a target="_blank" href="https://coastwatch.pfeg.noaa.gov/erddap/information.html" title="find out more...">ERDDAP</a> Dataset Discovery <a href="#settings" onclick="showSettings()" title="Click to configure settings" class="float-right"><i class="fa fa-cog"></i></span></a></legend>
-	                  <div id="testConnections" style="display: block"></div>
-					  <div id="searchForm" class="form-group" style="display: none">
-					    <label for="search">Search Datasets</label>
-					    <input type="text" class="form-control" id="search" aria-describedby="searchHelp" placeholder="Enter some text...">
-					    <small id="searchHelp" class="form-text text-muted">Type some words about the dataset you seek, then press the green button</small>
-					  	<button id="searchDatasetsButton" class="btn btn-success">Search</button>
-					  	<button id="clearButton" onclick="clearSearchDatasets()" class="btn btn-info">Clear</button>
-					  </div>
-					  <div class="row" id="searchInfo"></div>
+
+  <!-- Full-width Hero Section -->
+  <section class="hero-bg">
+    <div class="hero-content">
+      <h2>Discover Data on ERDDAP Servers</h2>
+      <p>Explore and access datasets available through ERDDAP data servers globally</p>
+    </div>
+  </section>
+
+
+
+      
+  <!-- ERDDAP INDEX Section -->
+   <section class="data">
+      <div class="center-card">
+    <div class="card">
+      <h4 class="fw-semibold mb-3 text-center">Search Datasets</h4>
+  
+      <div class="row" id="searchArea">
+	            <!-- <div class="col-md-12 well"> -->
+                <div>
+	                <!-- <legend id="datasets">
+                    <a target="_blank" href="https://coastwatch.pfeg.noaa.gov/erddap/information.html" title="find out more...">ERDDAP</a> Dataset Discovery
+                     <a href="#settings" onclick="showSettings()" title="Click to configure settings" class="float-right"><i class="fa fa-cog"></i></span></a></legend> -->
+	                
+                     <div class="alert alert-dismissible alert-success">
+                  <div id="testConnections" style="display: block"></div>
+                  <a href="#settings" onclick="showSettings()" title="Click to configure settings" class="float-right"><i class="fa fa-cog"></i></span></a>
+                  <div class="row" id="searchInfo"></div>
+                  </div> 
+              <div id="searchForm" class="form-group" style="display: none">
+                <!-- <label for="search">Search Datasets</label> -->
+                <input type="text" class="form-control"  style="margin-bottom: 5px" id="search" aria-describedby="searchHelp" placeholder="Enter some text...">
+                <small id="searchHelp" class="form-text text-muted">Enter keywords or a description of the dataset you are looking for, then click the Search button</small>
+                <button id="searchDatasetsButton" class="btn btn-success" >Search</button>
+                <button id="clearButton" onclick="clearSearchDatasets()" class="btn btn-info">Clear</button>
+              </div>
+              
 					  <div class="row" id="searchResults"></div>
-
 	            </div>
 	    	</div>
 	    	<div class="row" id="configurationArea" style="display: none">
@@ -90,14 +212,34 @@
 				</form>
 	         </div>
 
-		</div>
+ 
 		
-		<div>
-		<span><img src="https://raw.githubusercontent.com/IrishMarineInstitute/zapidox/master/img/dafm.png" alt="DAFM Logo" style="height: 50px;"/> <img src="https://raw.githubusercontent.com/IrishMarineInstitute/zapidox/master/img/forasnamara.jpg" alt="Marine Institute Logo" style="height: 50px;"/> <img src="https://raw.githubusercontent.com/IrishMarineInstitute/zapidox/master/img/eu-emff.png" alt="EU EMFF Logo" style="height: 50px;"/> <img src="https://raw.githubusercontent.com/IrishMarineInstitute/zapidox/master/img/eu_sifp.jpg" alt="EU Structural Infrastructure Fund and Programme Logo" style="height: 50px;"/></span>
-		<p>This work is supported by the Irish Government and the European Maritime & Fisheries Fund as part of the EMFF Operational Programme for 2014–2020.</p>
-		</div>
+
 		<script src="app.js"></script>
 
+
+
+
+
+
+  <div class="hero-content" id="about">
+    <h2>About the Project</h2>
+ This project is a modified version of the original ERDDAP search project (https://erddap.com) 
+and is maintained by the ERDDAP data user community in collaboration with the Southwest 
+Fisheries Science Center (SWFSC) and NOAA CoastWatch. The initial development was 
+supported by the Government of Ireland and the European Maritime and Fisheries Fund (EMFF) 
+was part of the EMFF Operational Programme 2014–2020.
+ 
+  </div>
+      </div>
+    </div>
+</section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    &copy; 2025 CC
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 	var getUrlSearchParams = function(){
 		if(location.hash.indexOf('?')>0){
@@ -156,6 +298,5 @@
 		 <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
 		   integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
 		   crossorigin=""></script>
-
-	</body>
+</body>
 </html>
