@@ -3,8 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <title>Search ERDDAP</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+  <meta name="description" content="Search datasets across multiple ERDDAPs">
+  <meta name="author" content="Irish Marine Institute/NOAA SWFSC">
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+  integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+  crossorigin=""/>
+
+  <title>Search Erddaps</title>
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+
   <style>
     body {
       background: #f5f6fa;
@@ -57,11 +78,13 @@
       color: #e0e0e0;
       margin-bottom: 0;
     }
+
+    /* content container */
     .center-card {
       margin-top: -1rem; /* slightly lifted into hero */
       margin-bottom: 3rem;
-      max-width: 1100px;
-      width: 98%;
+      /* max-width: 1300px; */
+      width: 100%;
       margin-left: auto;
       margin-right: auto;
     }
@@ -75,7 +98,7 @@
       /* Remove above and use background: #fff; if you want a solid white */
     }
     .footer {
-      text-align: center;
+      text-align: left;
       color: #888;
       padding: 2rem 0 1rem;
       font-size: .98rem;
@@ -152,22 +175,22 @@
       
   <!-- ERDDAP INDEX Section -->
    <section class="data">
-      <div class="center-card">
+    <div class="center-card" >
     <div class="card">
       <h4 class="fw-semibold mb-3 text-center">Search Datasets</h4>
   
       <div class="row" id="searchArea">
 	            <!-- <div class="col-md-12 well"> -->
-                <div>
-	                <!-- <legend id="datasets">
-                    <a target="_blank" href="https://coastwatch.pfeg.noaa.gov/erddap/information.html" title="find out more...">ERDDAP</a> Dataset Discovery
-                     <a href="#settings" onclick="showSettings()" title="Click to configure settings" class="float-right"><i class="fa fa-cog"></i></span></a></legend> -->
-	                
-                     <div class="alert alert-dismissible alert-success">
-                  <div id="testConnections" style="display: block"></div>
-                  <a href="#settings" onclick="showSettings()" title="Click to configure settings" class="float-right"><i class="fa fa-cog"></i></span></a>
-                  <div class="row" id="searchInfo"></div>
-                  </div> 
+              <div>
+                <!-- <legend id="datasets">
+                  <a target="_blank" href="https://coastwatch.pfeg.noaa.gov/erddap/information.html" title="find out more...">ERDDAP</a> Dataset Discovery
+                    <a href="#settings" onclick="showSettings()" title="Click to configure settings" class="float-right"><i class="fa fa-cog"></i></span></a></legend> -->
+                
+                    <div class="alert alert-dismissible alert-success">
+                <div id="testConnections" style="display: block"></div>
+                <a href="#settings" onclick="showSettings()" title="Click to configure settings" class="float-right"><i class="fa fa-cog"></i></span></a>
+                <div class="row" id="searchInfo"></div>
+              </div> 
               <div id="searchForm" class="form-group" style="display: none">
                 <!-- <label for="search">Search Datasets</label> -->
                 <input type="text" class="form-control"  style="margin-bottom: 5px" id="search" aria-describedby="searchHelp" placeholder="Enter some text...">
@@ -178,7 +201,10 @@
               
 					  <div class="row" id="searchResults"></div>
 	            </div>
-	    	</div>
+	    </div> <!-- end of searchARea -->
+
+
+
 	    	<div class="row" id="configurationArea" style="display: none">
 	            	<legend><a target="_blank" href="https://coastwatch.pfeg.noaa.gov/erddap/information.html" title="find out more...">ERDDAP</a> Server Settings <a href="#" onclick="showSearch()" title="Click to hide settings" class="float-right"><i class="fa fa-window-close"></i></span></a></legend>
 	            	<div id="configureErddapServer" class="form-group">
@@ -188,39 +214,36 @@
 					  	<button id="filterServersButton" onclick="filterServers()" class="btn btn-success">Filter</button>
 					  	<button id="clearButton" onclick="clearFilterServers()" class="btn btn-info">Clear</button>
 					  	<button id="addServerButton" onclick="showAddServerForm()" class="btn btn-primary">Add a new server...</button>
-					  </div>
-					  <div class="col-md-12 well" id="erddapServers"></div>
+				</div>
+				
+        <!-- <div class="col-md-12 well" id="erddapServers"></div> -->
 
 	     </div>
 
-	         <div class="row" id="addServerForm" style="display: none">
-				<form >
-				  <div class="form-group">
-				    <label for="newServerName">Name</label>
-				      <input type="text" class="form-control" id="newServerName" placeholder="My ERRDAP Server">
-				      <small id="share" class="form-text text-muted">To share your server with others, submit to <a target="_blank" title="opens a new window" href="https://github.com/erddap/search-erddaps/">search-erddaps</a></small>
-				  </div>
-				  <div class="form-group">
-				    <label for="newServerUrl">Url</label>
-				      <input type="text" class="form-control" id="newServerUrl" placeholder="http://my.erddap.server/erddap/">
-				      <small id="newServerUrlHelpBlock" class="form-text text-muted"></small>
-				  </div>
-				  <div class="form-group">
-				      <button type="button" id="addNewServerButtion" class="btn btn-success">Save</button>
-				      <button type="button" id="cancelAddNewServerButtion" onclick="hideAddServerForm()" class="btn btn-info">Cancel</button>
-				  </div>
-				</form>
-	         </div>
+	      <div class="row" id="addServerForm" style="display: none">
+            <form >
+              <div class="form-group">
+                <label for="newServerName">Name</label>
+                  <input type="text" class="form-control" id="newServerName" placeholder="My ERRDAP Server">
+                  <small id="share" class="form-text text-muted">To share your server with others, submit to <a target="_blank" title="opens a new window" href="https://github.com/erddap/search-erddaps/">search-erddaps</a></small>
+              </div>
+              <div class="form-group">
+                <label for="newServerUrl">Url</label>
+                  <input type="text" class="form-control" id="newServerUrl" placeholder="http://my.erddap.server/erddap/">
+                  <small id="newServerUrlHelpBlock" class="form-text text-muted"></small>
+              </div>
+              <div class="form-group">
+                  <button type="button" id="addNewServerButtion" class="btn btn-success">Save</button>
+                  <button type="button" id="cancelAddNewServerButtion" onclick="hideAddServerForm()" class="btn btn-info">Cancel</button>
+              </div>
+            </form>
+	      </div>
 
  
 		
-
+<div class="table-wrapper" style="overflow-x:auto; max-width:100%;">
 		<script src="app.js"></script>
-
-
-
-
-
+</div>
 
   <div class="hero-content" id="about">
     <h2>About the Project</h2>
