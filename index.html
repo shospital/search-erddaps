@@ -90,7 +90,6 @@
       /* overflow-x: auto;  */
     }
 
-
   .center-card table {
     width: 100%;
     word-wrap: break-word;
@@ -165,7 +164,7 @@
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav gap-2">
-          <li class="nav-item"><a class="nav-link" href="#searchArea">Data Search</a></li>
+          <li class="nav-item"><a class="nav-link" href="#data">Data Search</a></li>
           <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
         </ul>
       </div>
@@ -192,14 +191,15 @@
   
       <div class="row" id="searchArea">
 	            <!-- <div class="col-md-12 well"> -->
-              <div>
+               
                 <legend id="datasets">
                   <a target="_blank" href="https://coastwatch.pfeg.noaa.gov/erddap/information.html" title="find out more...">ERDDAP</a> Dataset Discovery
-                    <a href="#settings" onclick="showSettings()" title="Click to configure settings" class="float-right"><i class="fa fa-cog"></i></span></a></legend>  
+                    <a href="#settings" onclick="showSettings()" title="Click to configure settings" class="float-right"><i class="fa fa-cog"></i></span></a>
+                  </legend>  
                 
                     <div class="alert alert-dismissible alert-success">
                 <div id="testConnections" style="display: block"></div>
-                <a href="#settings" onclick="showSettings()" title="Click to configure settings" class="float-right"><i class="fa fa-cog"></i></span></a>
+
                 <div class="row" id="searchInfo"></div>
               </div> 
               <div id="searchForm" class="form-group" style="display: none">
@@ -211,9 +211,9 @@
               </div>
               
 					  <div class="row" id="searchResults"></div>
-	            </div>
+	        
 
-	    </div> <!-- end of searchARea -->
+	    </div> <!-- end of searchArea -->
 
 
 
@@ -226,11 +226,9 @@
 					  	<button id="filterServersButton" onclick="filterServers()" class="btn btn-success">Filter</button>
 					  	<button id="clearButton" onclick="clearFilterServers()" class="btn btn-info">Clear</button>
 					  	<button id="addServerButton" onclick="showAddServerForm()" class="btn btn-primary">Add a new server...</button>
+              <div class="col-md-12 well" id="erddapServers"></div>
 				</div>
-				
-        <!-- <div class="col-md-12 well" id="erddapServers"></div> -->
 
-	     </div>
 
 	      <div class="row" id="addServerForm" style="display: none">
             <form >
@@ -251,7 +249,7 @@
             </form>
 	      </div>
 
- 
+
 		
 <div class="table-wrapper" style="overflow-x:auto; max-width:100%;">
 		<script src="app.js"></script>
@@ -334,4 +332,5 @@ was part of the EMFF Operational Programme 2014–2020.
 		   integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
 		   crossorigin=""></script>
 </body>
+
 </html>
